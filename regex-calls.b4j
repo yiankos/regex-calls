@@ -1,0 +1,150 @@
+﻿AppType=StandardJava
+Build1=Default,b4j.example
+File1=info
+FileGroup1=Default Group
+Group=Default Group
+Library1=jcore
+Library2=jpoi
+Library3=json
+Library4=xlutils
+NumberOfFiles=1
+NumberOfLibraries=4
+NumberOfModules=0
+Version=10.2
+@EndOfDesignText@
+'Non-UI application (console / server application)
+#Region Project Attributes 
+	#CommandLineArgs:
+	#MergeLibraries: True 
+#End Region
+
+Sub Process_Globals
+	
+End Sub
+
+Sub AppStart (Args() As String)
+	Private filename As String = "Calls"
+	Dim html As String = File.ReadString(File.DirAssets, filename & ".html")
+
+	' Optional: print TableData0 locations
+	Dim htmlLines() As String = Regex.Split("\n", html)
+	For Each line As String In htmlLines
+		If line.ToLowerCase.Contains("tabledata0") Then
+			Log("MATCH: " & line)
+		End If
+	Next
+
+	' Extract the full JS array string
+	Dim jsonArrayText As String = ExtractTableDataArray(html, "TableData0")
+
+	' 🔧 Fix invalid escape sequences and cleanup
+	jsonArrayText = jsonArrayText.Replace("N\\A", "N/A")
+	jsonArrayText = jsonArrayText.Replace("\\", "\") ' double slashes in file paths
+
+	' Parse JSON
+	Dim jp As JSONParser
+	jp.Initialize(jsonArrayText)
+	Dim items As List = jp.NextArray
+
+	' Show count
+	Log("✅ Total items: " & items.Size)
+
+	Dim xl As XLUtils
+	xl.Initialize
+
+	Dim Workbook As XLWorkbookWriter = xl.CreateWriterBlank
+	Dim sheet1 As XLSheetWriter = Workbook.CreateSheetWriterByName("Sheet1")
+	
+	'CALLS
+	sheet1.PutString(xl.AddressName("A1"),"idx")
+	sheet1.PutString(xl.AddressName("B1"),"Direction")
+	sheet1.PutString(xl.AddressName("C1"),"Source")
+	sheet1.PutString(xl.AddressName("D1"),"Type")
+	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
+	sheet1.PutString(xl.AddressName("F1"),"Duration")
+	sheet1.PutString(xl.AddressName("G1"),"From")
+	sheet1.PutString(xl.AddressName("H1"),"To")
+	sheet1.PutString(xl.AddressName("I1"),"Details")
+	
+	'MESSAGES
+'	sheet1.PutString(xl.AddressName("A1"),"idx")
+'	sheet1.PutString(xl.AddressName("B1"),"Direction")
+'	sheet1.PutString(xl.AddressName("C1"),"Source")
+'	sheet1.PutString(xl.AddressName("D1"),"Type")
+'	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
+'	sheet1.PutString(xl.AddressName("F1"),"Text")
+'	sheet1.PutString(xl.AddressName("G1"),"Text (translated)")
+'	sheet1.PutString(xl.AddressName("H1"),"From")
+'	sheet1.PutString(xl.AddressName("I1"),"To")
+'	sheet1.PutString(xl.AddressName("J1"),"Coordinates")
+	
+	Dim Row1Based As Int = 1
+
+	' Print a few rows
+	For Each m As Map In items
+		Log("idx: " & m.Get("idx"))
+		Log("From: " & m.Get("From"))
+		Log("To: " & m.Get("To"))
+		Log("Source: " & m.Get("Source"))
+		Log("-------------------")
+		
+		Row1Based = Row1Based + 1
+		
+'		CALLS
+		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
+		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Direction"))
+		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Source"))
+		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Type"))
+		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
+		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
+		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("From").As(String).Replace("&lt;","").Replace("&gt;",""))
+		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("To").As(String).Replace("&lt;","").Replace("&gt;",""))
+'		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Coords"))
+		
+		'MESSAGES
+'		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
+'		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Direction"))
+'		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Source"))
+'		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Type"))
+'		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
+'		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
+'		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("DescriptionTransl"))
+'		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("From").As(String).Replace("&lt;","").Replace("&gt;",""))
+'		sheet1.PutString(xl.AddressOne("I",Row1Based),m.Get("To").As(String).Replace("&lt;","").Replace("&gt;",""))
+'		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Coords"))
+	Next
+	
+	Workbook.SaveAs(File.DirApp,filename & ".xlsx",True)
+	
+End Sub
+
+
+Sub ExtractTableDataArray(html As String, varName As String) As String
+	Dim lines() As String = Regex.Split("\n", html)
+	Dim isInArray As Boolean = False
+	Dim sb As StringBuilder
+	sb.Initialize
+	For Each line As String In lines
+		If Not(isInArray) And line.Contains("var " & varName & " =") Then
+			' Start collecting from the first "[" character
+			Dim startIdx As Int = line.IndexOf("[")
+			If startIdx > -1 Then
+				sb.Append(line.SubString(startIdx)).Append(CRLF)
+				isInArray = True
+			End If
+		Else If isInArray Then
+			If line.Trim.StartsWith("];") Then
+				' Just close the array
+				sb.Append("]").Append(CRLF)
+				Exit
+			Else
+				sb.Append(line).Append(CRLF)
+			End If
+		End If
+	Next
+	Return sb.ToString.Trim
+End Sub
+
+
+
+
