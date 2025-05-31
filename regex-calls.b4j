@@ -7,8 +7,9 @@ Library1=jcore
 Library2=jpoi
 Library3=json
 Library4=xlutils
+Library5=minihtmlparser
 NumberOfFiles=1
-NumberOfLibraries=4
+NumberOfLibraries=5
 NumberOfModules=0
 Version=10.2
 @EndOfDesignText@
@@ -23,7 +24,7 @@ Sub Process_Globals
 End Sub
 
 Sub AppStart (Args() As String)
-	Private filename As String = "Calls"
+	Private filename As String = "Messages"
 	Dim html As String = File.ReadString(File.DirAssets, filename & ".html")
 
 	' Optional: print TableData0 locations
@@ -56,27 +57,41 @@ Sub AppStart (Args() As String)
 	Dim sheet1 As XLSheetWriter = Workbook.CreateSheetWriterByName("Sheet1")
 	
 	'CALLS
-	sheet1.PutString(xl.AddressName("A1"),"idx")
-	sheet1.PutString(xl.AddressName("B1"),"Direction")
-	sheet1.PutString(xl.AddressName("C1"),"Source")
-	sheet1.PutString(xl.AddressName("D1"),"Type")
-	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
-	sheet1.PutString(xl.AddressName("F1"),"Duration")
-	sheet1.PutString(xl.AddressName("G1"),"From")
-	sheet1.PutString(xl.AddressName("H1"),"To")
-	sheet1.PutString(xl.AddressName("I1"),"Details")
-	
-	'MESSAGES
 '	sheet1.PutString(xl.AddressName("A1"),"idx")
 '	sheet1.PutString(xl.AddressName("B1"),"Direction")
 '	sheet1.PutString(xl.AddressName("C1"),"Source")
 '	sheet1.PutString(xl.AddressName("D1"),"Type")
 '	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
-'	sheet1.PutString(xl.AddressName("F1"),"Text")
-'	sheet1.PutString(xl.AddressName("G1"),"Text (translated)")
-'	sheet1.PutString(xl.AddressName("H1"),"From")
-'	sheet1.PutString(xl.AddressName("I1"),"To")
-'	sheet1.PutString(xl.AddressName("J1"),"Coordinates")
+'	sheet1.PutString(xl.AddressName("F1"),"Duration")
+'	sheet1.PutString(xl.AddressName("G1"),"From")
+'	sheet1.PutString(xl.AddressName("H1"),"To")
+'	sheet1.PutString(xl.AddressName("I1"),"Details")
+	
+	'MESSAGES
+	sheet1.PutString(xl.AddressName("A1"),"idx")
+	sheet1.PutString(xl.AddressName("B1"),"Direction")
+	sheet1.PutString(xl.AddressName("C1"),"Source")
+	sheet1.PutString(xl.AddressName("D1"),"Type")
+	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
+	sheet1.PutString(xl.AddressName("F1"),"Text")
+	sheet1.PutString(xl.AddressName("G1"),"Text (translated)")
+	sheet1.PutString(xl.AddressName("H1"),"From")
+	sheet1.PutString(xl.AddressName("I1"),"To")
+	sheet1.PutString(xl.AddressName("J1"),"Coordinates")
+
+	'CONTACTS
+'	sheet1.PutString(xl.AddressName("A1"),"idx")
+'	sheet1.PutString(xl.AddressName("B1"),"Type")
+'	sheet1.PutString(xl.AddressName("C1"),"Contact")
+'	sheet1.PutString(xl.AddressName("D1"),"Deleted")
+'	sheet1.PutString(xl.AddressName("E1"),"Calls")
+'	sheet1.PutString(xl.AddressName("F1"),"Messages")
+'	sheet1.PutString(xl.AddressName("G1"),"Phones & Emails")
+'	sheet1.PutString(xl.AddressName("H1"),"Internet")
+'	sheet1.PutString(xl.AddressName("I1"),"Addresses")
+'	sheet1.PutString(xl.AddressName("J1"),"Other")
+'	sheet1.PutString(xl.AddressName("K1"),"Photos")
+'	sheet1.PutString(xl.AddressName("L1"),"Source")
 	
 	Dim Row1Based As Int = 1
 
@@ -86,32 +101,61 @@ Sub AppStart (Args() As String)
 		Log("From: " & m.Get("From"))
 		Log("To: " & m.Get("To"))
 		Log("Source: " & m.Get("Source"))
-		Log("-------------------")
+		
 		
 		Row1Based = Row1Based + 1
 		
 '		CALLS
-		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
-		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Direction"))
-		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Source"))
-		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Type"))
-		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
-		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
-		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("From").As(String).Replace("&lt;","").Replace("&gt;",""))
-		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("To").As(String).Replace("&lt;","").Replace("&gt;",""))
-'		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Coords"))
-		
-		'MESSAGES
 '		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
 '		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Direction"))
 '		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Source"))
 '		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Type"))
 '		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
 '		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
-'		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("DescriptionTransl"))
-'		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("From").As(String).Replace("&lt;","").Replace("&gt;",""))
-'		sheet1.PutString(xl.AddressOne("I",Row1Based),m.Get("To").As(String).Replace("&lt;","").Replace("&gt;",""))
+'		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("From").As(String).Replace("&lt;","").Replace("&gt;",""))
+'		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("To").As(String).Replace("&lt;","").Replace("&gt;",""))
 '		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Coords"))
+		
+		'MESSAGES
+		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
+		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Direction"))
+		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Source"))
+		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Type"))
+		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
+		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
+		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("DescriptionTransl"))
+		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("From").As(String).Replace("&lt;","").Replace("&gt;",""))
+		sheet1.PutString(xl.AddressOne("I",Row1Based),m.Get("To").As(String).Replace("&lt;","").Replace("&gt;",""))
+		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Coords"))
+
+		'CONTACTS
+'		Private contact As String = m.Get("Contact").As(String)
+'		contact.SubString2(contact.IndexOf(">"),contact.IndexOf2("<",3))
+'		contact.Replace($"<br/><br/></div><div style=\"color: #008080;\">"$,"")
+'		contact.Replace($"<br/></div><div style=\"color: #000000;\">"$,"")
+'		contact.Replace($"</div>""$,"")
+		
+	
+		Dim res As Map = ExtractSourceAndClean(m.Get("Contact").As(String))
+		Log("Cleaned Text:")
+		Log(res.Get("Text"))
+		Log("Extracted Source:")
+		Log(res.Get("Source"))
+		Log("-------------------")
+		
+		
+'		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
+'		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Type"))
+'		sheet1.PutString(xl.AddressOne("C",Row1Based),res.Get("Text"))
+'		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("ExpDeleted"))
+'		sheet1.PutString(xl.AddressOne("E",Row1Based),RemoveHtmlTags(m.Get("Calls")))
+'		sheet1.PutString(xl.AddressOne("F",Row1Based),RemoveHtmlTags(m.Get("Messages")))
+'		sheet1.PutString(xl.AddressOne("G",Row1Based),RemoveHtmlTags(m.Get("PhonesEmails")))
+'		sheet1.PutString(xl.AddressOne("H",Row1Based),RemoveHtmlTags(m.Get("Internet").As(String)))
+'		sheet1.PutString(xl.AddressOne("I",Row1Based),RemoveHtmlTags(m.Get("Adresses").As(String)))
+'		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Other"))
+'		sheet1.PutString(xl.AddressOne("L",Row1Based),res.Get("Source"))
+'		sheet1.PutString(xl.AddressOne("K",Row1Based),m.Get("Photos").As(String).SubString2(m.Get("Photos").As(String).IndexOf("\"),m.Get("Photos").As(String).IN))
 	Next
 	
 	Workbook.SaveAs(File.DirApp,filename & ".xlsx",True)
@@ -145,6 +189,60 @@ Sub ExtractTableDataArray(html As String, varName As String) As String
 	Return sb.ToString.Trim
 End Sub
 
+Sub RemoveHtmlTags(Html As String) As String
+	' Replace line breaks
+	Html = Html.Replace("<br/>", CRLF).Replace("<br>", CRLF)
+
+	' Optional: Replace <wbr> with empty string
+	Html = Html.Replace("<wbr>", "")
+	
+	Html = Html.Replace("Phone number: ", "")
+
+	Html = Html.Replace("Email: ", "")
+	
+	Html = Html.Replace("Telegram ID: ", "")
+	
+	Html = Html.Replace("Address: ", "")
+
+	' Remove all other HTML tags
+	Dim cleaned As String = Regex.Replace("<[^>]+>", Html, "")
+    
+	Return cleaned.Trim
+End Sub
+
+Sub ExtractSourceAndClean(Html As String) As Map
+	Dim result As Map
+	result.Initialize
+
+	' Step 1: Normalize <br/> and <wbr>
+	Html = Html.Replace("<br/>", CRLF).Replace("<br>", CRLF).Replace("<wbr>", "")
+
+	' Step 2: Remove all HTML tags
+	Dim cleaned As String = Regex.Replace("<[^>]+>", Html, "").Trim
+
+	' Step 3: Split lines
+	Dim lines() As String = Regex.Split(CRLF, cleaned)
+
+	' Step 4: Find and extract Source
+	Dim sourceValue As String = ""
+	Dim sb As StringBuilder
+	sb.Initialize
+
+	For i = 0 To lines.Length - 1
+		Dim line As String = lines(i).Trim
+		If line.ToLowerCase = "source:" And i < lines.Length - 1 Then
+			sourceValue = lines(i + 1).Trim
+			i = i + 1 ' skip the value too
+		Else
+			sb.Append(line).Append(CRLF)
+		End If
+	Next
+
+	result.Put("Text", sb.ToString.Trim)
+	result.Put("Source", sourceValue)
+
+	Return result
+End Sub
 
 
 
