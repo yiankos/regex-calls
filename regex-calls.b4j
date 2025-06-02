@@ -24,7 +24,7 @@ Sub Process_Globals
 End Sub
 
 Sub AppStart (Args() As String)
-	Private filename As String = "Messages"
+	Private filename As String = "Messages (1-4000)"
 	Dim html As String = File.ReadString(File.DirAssets, filename & ".html")
 
 	' Optional: print TableData0 locations
@@ -63,9 +63,11 @@ Sub AppStart (Args() As String)
 '	sheet1.PutString(xl.AddressName("D1"),"Type")
 '	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
 '	sheet1.PutString(xl.AddressName("F1"),"Duration")
-'	sheet1.PutString(xl.AddressName("G1"),"From")
-'	sheet1.PutString(xl.AddressName("H1"),"To")
-'	sheet1.PutString(xl.AddressName("I1"),"Details")
+'	sheet1.PutString(xl.AddressName("G1"),"FromName")
+'	sheet1.PutString(xl.AddressName("H1"),"From")
+'	sheet1.PutString(xl.AddressName("I1"),"ToName")
+'	sheet1.PutString(xl.AddressName("J1"),"To")
+'	sheet1.PutString(xl.AddressName("K1"),"Details")
 	
 	'MESSAGES
 	sheet1.PutString(xl.AddressName("A1"),"idx")
@@ -75,9 +77,11 @@ Sub AppStart (Args() As String)
 	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
 	sheet1.PutString(xl.AddressName("F1"),"Text")
 	sheet1.PutString(xl.AddressName("G1"),"Text (translated)")
-	sheet1.PutString(xl.AddressName("H1"),"From")
-	sheet1.PutString(xl.AddressName("I1"),"To")
-	sheet1.PutString(xl.AddressName("J1"),"Coordinates")
+	sheet1.PutString(xl.AddressName("H1"),"FromName")
+	sheet1.PutString(xl.AddressName("I1"),"From")
+	sheet1.PutString(xl.AddressName("J1"),"ToName")
+	sheet1.PutString(xl.AddressName("K1"),"To")
+	sheet1.PutString(xl.AddressName("L1"),"Coordinates")
 
 	'CONTACTS
 '	sheet1.PutString(xl.AddressName("A1"),"idx")
@@ -101,8 +105,7 @@ Sub AppStart (Args() As String)
 		Log("From: " & m.Get("From"))
 		Log("To: " & m.Get("To"))
 		Log("Source: " & m.Get("Source"))
-		
-		
+				
 		Row1Based = Row1Based + 1
 		
 '		CALLS
@@ -112,9 +115,23 @@ Sub AppStart (Args() As String)
 '		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Type"))
 '		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
 '		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
-'		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("From").As(String).Replace("&lt;","").Replace("&gt;",""))
-'		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("To").As(String).Replace("&lt;","").Replace("&gt;",""))
-'		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Coords"))
+'		Private from() As String = Regex.Split("&lt;",m.Get("From").As(String).Replace("&gt;",""))
+'		Private Too() As String = Regex.Split("&lt;",m.Get("To").As(String).Replace("&gt;",""))
+'		If from.Length-1=0 Then
+'			sheet1.PutString(xl.AddressOne("G",Row1Based),from(0))
+'			sheet1.PutString(xl.AddressOne("H",Row1Based),"")
+'		Else
+'			sheet1.PutString(xl.AddressOne("G",Row1Based),from(0))
+'			sheet1.PutString(xl.AddressOne("H",Row1Based),from(1))
+'		End If
+'		If Too.Length-1=0 Then
+'			sheet1.PutString(xl.AddressOne("I",Row1Based),Too(0))
+'			sheet1.PutString(xl.AddressOne("J",Row1Based),"")
+'		Else
+'			sheet1.PutString(xl.AddressOne("I",Row1Based),Too(0))
+'			sheet1.PutString(xl.AddressOne("J",Row1Based),Too(1))
+'		End If
+'		sheet1.PutString(xl.AddressOne("K",Row1Based),m.Get("Coords"))
 		
 		'MESSAGES
 		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
@@ -124,9 +141,28 @@ Sub AppStart (Args() As String)
 		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
 		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
 		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("DescriptionTransl"))
-		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("From").As(String).Replace("&lt;","").Replace("&gt;",""))
-		sheet1.PutString(xl.AddressOne("I",Row1Based),m.Get("To").As(String).Replace("&lt;","").Replace("&gt;",""))
-		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Coords"))
+		Private from() As String = Regex.Split("&lt;",m.Get("From").As(String).Replace("&gt;",""))
+		Private Too() As String = Regex.Split("&lt;",m.Get("To").As(String).Replace("&gt;",""))
+		If from.Length-1=0 Then
+			sheet1.PutString(xl.AddressOne("H",Row1Based),from(0))
+			sheet1.PutString(xl.AddressOne("I",Row1Based),"")
+		Else
+			sheet1.PutString(xl.AddressOne("H",Row1Based),from(0))
+			sheet1.PutString(xl.AddressOne("I",Row1Based),from(1))
+		End If
+		If Too.Length-1=0 Then
+			sheet1.PutString(xl.AddressOne("J",Row1Based),Too(0))
+			sheet1.PutString(xl.AddressOne("K",Row1Based),"")
+		Else
+			sheet1.PutString(xl.AddressOne("J",Row1Based),Too(0))
+			sheet1.PutString(xl.AddressOne("K",Row1Based),Too(1))
+		End If
+		If m.Get("Coords").As(String).IndexOf($"""$)<>-1 Then
+			Log(m.Get("Coords").As(String).IndexOf($"""$))
+			sheet1.PutString(xl.AddressOne("L",Row1Based),m.Get("Coords").As(String).SubString2(m.Get("Coords").As(String).IndexOf($"""$),m.Get("Coords").As(String).IndexOf2($"""$,10)))
+		Else
+			sheet1.PutString(xl.AddressOne("L",Row1Based),m.Get("Coords"))
+		End If
 
 		'CONTACTS
 '		Private contact As String = m.Get("Contact").As(String)
