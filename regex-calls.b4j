@@ -1,14 +1,12 @@
 ﻿AppType=StandardJava
 Build1=Default,b4j.example
-File1=info
-FileGroup1=Default Group
 Group=Default Group
 Library1=jcore
 Library2=jpoi
 Library3=json
 Library4=xlutils
 Library5=minihtmlparser
-NumberOfFiles=1
+NumberOfFiles=0
 NumberOfLibraries=5
 NumberOfModules=0
 Version=10.2
@@ -24,7 +22,7 @@ Sub Process_Globals
 End Sub
 
 Sub AppStart (Args() As String)
-	Private filename As String = "Messages (1-4000)"
+	Private filename As String = "Wireless Connections"
 	Dim html As String = File.ReadString(File.DirAssets, filename & ".html")
 
 	' Optional: print TableData0 locations
@@ -36,13 +34,11 @@ Sub AppStart (Args() As String)
 	Next
 
 	' Extract the full JS array string
-	Dim jsonArrayText As String = ExtractTableDataArray(html, "TableData0")
-
-	' 🔧 Fix invalid escape sequences and cleanup
+'	Dim jsonArrayText As String = ExtractTableDataArray(html, "TableData0")
+	Dim jsonArrayText As String = ExtractTableDataArray(html, "TableData1")
 	jsonArrayText = jsonArrayText.Replace("N\\A", "N/A")
 	jsonArrayText = jsonArrayText.Replace("\\", "\") ' double slashes in file paths
 
-	' Parse JSON
 	Dim jp As JSONParser
 	jp.Initialize(jsonArrayText)
 	Dim items As List = jp.NextArray
@@ -56,6 +52,29 @@ Sub AppStart (Args() As String)
 	Dim Workbook As XLWorkbookWriter = xl.CreateWriterBlank
 	Dim sheet1 As XLSheetWriter = Workbook.CreateSheetWriterByName("Sheet1")
 	
+	'ACCOUNTS AND PASSWORDS
+'	sheet1.PutString(xl.AddressName("A1"),"Cloud")
+'	sheet1.PutString(xl.AddressName("B1"),"Deleted")
+'	sheet1.PutString(xl.AddressName("C1"),"Service")
+'	sheet1.PutString(xl.AddressName("D1"),"Account")
+'	sheet1.PutString(xl.AddressName("E1"),"Type")
+'	sheet1.PutString(xl.AddressName("F1"),"Password/Token")
+'	sheet1.PutString(xl.AddressName("G1"),"Source")
+'	sheet1.PutString(xl.AddressName("H1"),"Source file")
+
+	'APPLE NOTES
+'	sheet1.PutString(xl.AddressName("A1"),"idx")
+'	sheet1.PutString(xl.AddressName("B1"),"Source")
+'	sheet1.PutString(xl.AddressName("C1"),"Deleted")
+'	sheet1.PutString(xl.AddressName("D1"),"Title")
+'	sheet1.PutString(xl.AddressName("E1"),"Title (translated)")
+'	sheet1.PutString(xl.AddressName("F1"),"Modified (Athens)")
+'	sheet1.PutString(xl.AddressName("G1"),"Text")
+'	sheet1.PutString(xl.AddressName("H1"),"Text (translated)")
+'	sheet1.PutString(xl.AddressName("I1"),"ID")
+'	sheet1.PutString(xl.AddressName("J1"),"Snippet")
+'	sheet1.PutString(xl.AddressName("K1"),"Snippet (translated)")
+	
 	'CALLS
 '	sheet1.PutString(xl.AddressName("A1"),"idx")
 '	sheet1.PutString(xl.AddressName("B1"),"Direction")
@@ -68,20 +87,6 @@ Sub AppStart (Args() As String)
 '	sheet1.PutString(xl.AddressName("I1"),"ToName")
 '	sheet1.PutString(xl.AddressName("J1"),"To")
 '	sheet1.PutString(xl.AddressName("K1"),"Details")
-	
-	'MESSAGES
-	sheet1.PutString(xl.AddressName("A1"),"idx")
-	sheet1.PutString(xl.AddressName("B1"),"Direction")
-	sheet1.PutString(xl.AddressName("C1"),"Source")
-	sheet1.PutString(xl.AddressName("D1"),"Type")
-	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
-	sheet1.PutString(xl.AddressName("F1"),"Text")
-	sheet1.PutString(xl.AddressName("G1"),"Text (translated)")
-	sheet1.PutString(xl.AddressName("H1"),"FromName")
-	sheet1.PutString(xl.AddressName("I1"),"From")
-	sheet1.PutString(xl.AddressName("J1"),"ToName")
-	sheet1.PutString(xl.AddressName("K1"),"To")
-	sheet1.PutString(xl.AddressName("L1"),"Coordinates")
 
 	'CONTACTS
 '	sheet1.PutString(xl.AddressName("A1"),"idx")
@@ -97,6 +102,43 @@ Sub AppStart (Args() As String)
 '	sheet1.PutString(xl.AddressName("K1"),"Photos")
 '	sheet1.PutString(xl.AddressName("L1"),"Source")
 	
+	'MESSAGES
+'	sheet1.PutString(xl.AddressName("A1"),"idx")
+'	sheet1.PutString(xl.AddressName("B1"),"Direction")
+'	sheet1.PutString(xl.AddressName("C1"),"Source")
+'	sheet1.PutString(xl.AddressName("D1"),"Type")
+'	sheet1.PutString(xl.AddressName("E1"),"Time stamp (Athens)")
+'	sheet1.PutString(xl.AddressName("F1"),"Text")
+'	sheet1.PutString(xl.AddressName("G1"),"Text (translated)")
+'	sheet1.PutString(xl.AddressName("H1"),"FromName")
+'	sheet1.PutString(xl.AddressName("I1"),"From")
+'	sheet1.PutString(xl.AddressName("J1"),"ToName")
+'	sheet1.PutString(xl.AddressName("K1"),"To")
+'	sheet1.PutString(xl.AddressName("L1"),"Coordinates")
+
+	'USER SEARCHES
+'	sheet1.PutString(xl.AddressName("A1"),"idx")
+'	sheet1.PutString(xl.AddressName("B1"),"Source")
+'	sheet1.PutString(xl.AddressName("C1"),"Type")
+'	sheet1.PutString(xl.AddressName("D1"),"Timestamp")
+'	sheet1.PutString(xl.AddressName("E1"),"Query")
+'	sheet1.PutString(xl.AddressName("F1"),"Query (translated)")
+	
+	'WIRELESS CONNECTIONS
+	sheet1.PutString(xl.AddressName("A1"),"idx")
+	sheet1.PutString(xl.AddressName("B1"),"Source")
+	sheet1.PutString(xl.AddressName("C1"),"Deleted")
+	sheet1.PutString(xl.AddressName("D1"),"Point kind")
+	sheet1.PutString(xl.AddressName("E1"),"Entry timestamp (Athens)")
+	sheet1.PutString(xl.AddressName("F1"),"Timestamp (Athens)")
+	sheet1.PutString(xl.AddressName("G1"),"Exit timestamp (Athens)")
+	sheet1.PutString(xl.AddressName("H1"),"Coordinates")
+	sheet1.PutString(xl.AddressName("I1"),"Horizontal accuracy")
+	sheet1.PutString(xl.AddressName("J1"),"Vertical accuracy")
+	sheet1.PutString(xl.AddressName("K1"),"Altitude")
+	sheet1.PutString(xl.AddressName("L1"),"Speed")
+	sheet1.PutString(xl.AddressName("M1"),"Course")
+	
 	Dim Row1Based As Int = 1
 
 	' Print a few rows
@@ -107,6 +149,29 @@ Sub AppStart (Args() As String)
 		Log("Source: " & m.Get("Source"))
 				
 		Row1Based = Row1Based + 1
+		
+		'ACCOUNTS AND PASSWORDS
+'		sheet1.PutString(xl.AddressOne("A",Row1Based),m.Get("Cloud"))
+'		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Deleted"))
+'		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Service"))
+'		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Account"))
+'		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Type"))
+'		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Password"))
+'		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("Source"))
+'		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("SourceFile"))
+		
+		'APPLE NOTES
+'		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
+'		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("_Source"))
+'		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("ExpDeleted"))
+'		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Title"))
+'		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("TitleTransl"))
+'		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Modified"))
+'		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("Text"))
+'		sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("TextTransl"))
+'		sheet1.PutString(xl.AddressOne("I",Row1Based),m.Get("ID"))
+'		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Snippet"))
+'		sheet1.PutString(xl.AddressOne("K",Row1Based),m.Get("SnippetTransl"))
 		
 '		CALLS
 '		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
@@ -132,37 +197,6 @@ Sub AppStart (Args() As String)
 '			sheet1.PutString(xl.AddressOne("J",Row1Based),Too(1))
 '		End If
 '		sheet1.PutString(xl.AddressOne("K",Row1Based),m.Get("Coords"))
-		
-		'MESSAGES
-		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
-		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Direction"))
-		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Source"))
-		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Type"))
-		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
-		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
-		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("DescriptionTransl"))
-		Private from() As String = Regex.Split("&lt;",m.Get("From").As(String).Replace("&gt;",""))
-		Private Too() As String = Regex.Split("&lt;",m.Get("To").As(String).Replace("&gt;",""))
-		If from.Length-1=0 Then
-			sheet1.PutString(xl.AddressOne("H",Row1Based),from(0))
-			sheet1.PutString(xl.AddressOne("I",Row1Based),"")
-		Else
-			sheet1.PutString(xl.AddressOne("H",Row1Based),from(0))
-			sheet1.PutString(xl.AddressOne("I",Row1Based),from(1))
-		End If
-		If Too.Length-1=0 Then
-			sheet1.PutString(xl.AddressOne("J",Row1Based),Too(0))
-			sheet1.PutString(xl.AddressOne("K",Row1Based),"")
-		Else
-			sheet1.PutString(xl.AddressOne("J",Row1Based),Too(0))
-			sheet1.PutString(xl.AddressOne("K",Row1Based),Too(1))
-		End If
-		If m.Get("Coords").As(String).IndexOf($"""$)<>-1 Then
-			Log(m.Get("Coords").As(String).IndexOf($"""$))
-			sheet1.PutString(xl.AddressOne("L",Row1Based),m.Get("Coords").As(String).SubString2(m.Get("Coords").As(String).IndexOf($"""$),m.Get("Coords").As(String).IndexOf2($"""$,10)))
-		Else
-			sheet1.PutString(xl.AddressOne("L",Row1Based),m.Get("Coords"))
-		End If
 
 		'CONTACTS
 '		Private contact As String = m.Get("Contact").As(String)
@@ -170,16 +204,9 @@ Sub AppStart (Args() As String)
 '		contact.Replace($"<br/><br/></div><div style=\"color: #008080;\">"$,"")
 '		contact.Replace($"<br/></div><div style=\"color: #000000;\">"$,"")
 '		contact.Replace($"</div>""$,"")
-		
-	
-		Dim res As Map = ExtractSourceAndClean(m.Get("Contact").As(String))
-		Log("Cleaned Text:")
-		Log(res.Get("Text"))
-		Log("Extracted Source:")
-		Log(res.Get("Source"))
-		Log("-------------------")
-		
-		
+'		
+'	
+'		Dim res As Map = ExtractSourceAndClean(m.Get("Contact").As(String))
 '		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
 '		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Type"))
 '		sheet1.PutString(xl.AddressOne("C",Row1Based),res.Get("Text"))
@@ -189,9 +216,73 @@ Sub AppStart (Args() As String)
 '		sheet1.PutString(xl.AddressOne("G",Row1Based),RemoveHtmlTags(m.Get("PhonesEmails")))
 '		sheet1.PutString(xl.AddressOne("H",Row1Based),RemoveHtmlTags(m.Get("Internet").As(String)))
 '		sheet1.PutString(xl.AddressOne("I",Row1Based),RemoveHtmlTags(m.Get("Adresses").As(String)))
-'		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Other"))
+'		sheet1.PutString(xl.AddressOne("J",Row1Based),RemoveHtmlTags(m.Get("Other")))
 '		sheet1.PutString(xl.AddressOne("L",Row1Based),res.Get("Source"))
 '		sheet1.PutString(xl.AddressOne("K",Row1Based),m.Get("Photos").As(String).SubString2(m.Get("Photos").As(String).IndexOf("\"),m.Get("Photos").As(String).IN))
+		
+		'MESSAGES
+'		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
+'		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Direction"))
+'		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Source"))
+'		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Type"))
+'		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Timestamp"))
+'		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Description"))
+'		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("DescriptionTransl"))
+'		Private from() As String = Regex.Split("&lt;",m.Get("From").As(String).Replace("&gt;",""))
+'		Private Too() As String = Regex.Split("&lt;",m.Get("To").As(String).Replace("&gt;",""))
+'		If from.Length-1=0 Then
+'			sheet1.PutString(xl.AddressOne("H",Row1Based),from(0))
+'			sheet1.PutString(xl.AddressOne("I",Row1Based),"")
+'		Else
+'			sheet1.PutString(xl.AddressOne("H",Row1Based),from(0))
+'			sheet1.PutString(xl.AddressOne("I",Row1Based),from(1))
+'		End If
+'		If Too.Length-1=0 Then
+'			sheet1.PutString(xl.AddressOne("J",Row1Based),Too(0))
+'			sheet1.PutString(xl.AddressOne("K",Row1Based),"")
+'		Else
+'			sheet1.PutString(xl.AddressOne("J",Row1Based),Too(0))
+'			sheet1.PutString(xl.AddressOne("K",Row1Based),Too(1))
+'		End If
+'		If m.Get("Coords").As(String).IndexOf($"https:"$)<>-1 Then
+'			Dim ma As Matcher = Regex.Matcher("<a\s+href\s*=\s*""([^""]+)""",m.Get("Coords").As(String))
+'			If ma.Find Then
+'				sheet1.PutString(xl.AddressOne("L",Row1Based),ma.Group(1))
+'			End If
+'		Else
+'			sheet1.PutString(xl.AddressOne("L",Row1Based),m.Get("Coords"))
+'		End If
+	
+		'USER SEARCHES
+'		sheet1.PutString(xl.AddressOne("A",Row1Based),m.Get("idx"))
+'		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("Source"))
+'		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("Type"))
+'		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Timestamp"))
+'		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Description"))
+'		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("DescriptionTransl"))
+	
+		'WIRELESS CONNECTIONS
+		sheet1.PutNumber(xl.AddressOne("A",Row1Based),m.Get("idx"))
+		sheet1.PutString(xl.AddressOne("B",Row1Based),m.Get("_Source"))
+		sheet1.PutString(xl.AddressOne("C",Row1Based),m.Get("ExpDeleted"))
+		sheet1.PutString(xl.AddressOne("D",Row1Based),m.Get("Point kind"))
+		sheet1.PutString(xl.AddressOne("E",Row1Based),m.Get("Entry time stamp"))
+		sheet1.PutString(xl.AddressOne("F",Row1Based),m.Get("Time stamp"))
+		sheet1.PutString(xl.AddressOne("G",Row1Based),m.Get("Exit time stamp"))
+		If m.Get("Coordinates").As(String).IndexOf($"https:"$)<>-1 Then
+			Dim ma As Matcher = Regex.Matcher("<a\s+href\s*=\s*""([^""]+)""",m.Get("Coordinates").As(String))
+			If ma.Find Then
+				sheet1.PutString(xl.AddressOne("H",Row1Based),ma.Group(1))
+			End If
+		Else
+			sheet1.PutString(xl.AddressOne("H",Row1Based),m.Get("Coordinates"))
+		End If
+		sheet1.PutString(xl.AddressOne("I",Row1Based),m.Get("Horizontal accuracy"))
+		sheet1.PutString(xl.AddressOne("J",Row1Based),m.Get("Vertical accuracy"))
+		sheet1.PutString(xl.AddressOne("K",Row1Based),m.Get("Altitude"))
+		sheet1.PutString(xl.AddressOne("L",Row1Based),m.Get("Speed"))
+		sheet1.PutString(xl.AddressOne("M",Row1Based),m.Get("Course"))
+		
 	Next
 	
 	Workbook.SaveAs(File.DirApp,filename & ".xlsx",True)
